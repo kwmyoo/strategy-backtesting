@@ -1,0 +1,10 @@
+# ninja log v5
+3	24	1675497298453212842	CMakeFiles/strategy_backtesting.dir/src/strategies/simple_rebalance.cpp.o	fbb0a6deab14a198
+3	199	1675497298627362333	CMakeFiles/strategy_backtesting.dir/src/main.cpp.o	7a351a8e50bf88fc
+4	187	1675497298614805324	CMakeFiles/strategy_backtesting.dir/src/data/processor/processor.cpp.o	5b796943c20b86c7
+3	458	1675497298885744699	CMakeFiles/strategy_backtesting.dir/src/data/processor/csv_processor.cpp.o	28290ac4bc1e4535
+4	29	1675497702187070406	CMakeFiles/strategy_backtesting.dir/src/strategies/simple_rebalance.cpp.o	b3a0571d687c55e5
+4	193	1675497702350292654	CMakeFiles/strategy_backtesting.dir/src/data/processor/processor.cpp.o	e610fc31fba97e01
+4	210	1675497702367581464	CMakeFiles/strategy_backtesting.dir/src/main.cpp.o	2de7025d64401205
+4	476	1675497702632593016	CMakeFiles/strategy_backtesting.dir/src/data/processor/csv_processor.cpp.o	39cc64d59d153ca
+476	510	1675497702667974622	strategy_backtesting	c3ee0f7d931d05ac
