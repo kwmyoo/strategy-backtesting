@@ -21,4 +21,5 @@ add_executable(strategy_backtesting
         src/strategies/strategy.h
         src/third_party/fast-cpp-csv-parser-master/csv.h
         src/main.cpp
-        src/data/provider/csv_template.h src/data/processor/processor.cpp)
+        src/data/provider/csv_template.h
+        src/data/processor/processor.cpp)
