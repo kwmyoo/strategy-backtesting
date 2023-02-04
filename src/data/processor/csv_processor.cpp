@@ -2,9 +2,8 @@
 // Created by Kun Woo Yoo on 2023/01/28.
 //
 
-
+#include <iostream>
 #include <memory>
-#include <string>
 #include <utility>
 
 #include "utilities.h"
@@ -18,8 +17,8 @@ CsvProcessor::CsvProcessor() {
 }
 
 PeriodQueue CsvProcessor::Process(const std::string& file_name) {
-  io::CSVReader<2> in(file_name);
-  in.read_header(io::ignore_no_column, "Time", "Price");
+  io::CSVReader<2, io::trim_chars<>, io::double_quote_escape<',', '\"'> > in(file_name);
+  in.read_header(io::ignore_extra_column, "Time", "Price");
 
   std::string time_string;
   std::string price_string;

@@ -34,6 +34,10 @@ class Time {
 
   std::time_t time() const { return time_; }
 
+  std::string ToString() {
+    return std::to_string(time_);
+  }
+
  private:
   std::time_t time_;
 };
@@ -42,8 +46,9 @@ class Price {
  public:
   Price() {}
 
-  Price(const std::string& price_string) {
+  Price(const std::string& price_string) : price_(0) {
     for (const char& c: price_string) {
+      if (c == ',') continue;
       price_ *= 10;
       price_ += (c - '0');
     }
@@ -58,6 +63,10 @@ class Price {
 
   int price() { return price_; }
 
+  std::string ToString() {
+    return std::to_string(price_);
+  }
+
  private:
   int price_;
 };
@@ -65,6 +74,15 @@ class Price {
 class InvestingComPeriod : public Period {
  public:
   InvestingComPeriod(Time&& time, Price&& price) : time_(std::move(time)), price_(std::move(price)) {}
+
+  const Time& time() const { return time_; }
+
+  const Price& price() const { return price_; }
+
+  std::string ToString() {
+    char* result;
+    return "Price: " + price_.ToString() + ", Time: " + time_.ToString();
+  }
 
  private:
   Time time_;

@@ -12,7 +12,7 @@ class Processor {
 
   virtual PeriodQueue Process(const std::string& file_name) = 0;
 
-  std::unique_ptr<Processor> CreateProcessor(FileType file_type);
+  static std::unique_ptr<Processor> CreateProcessor(FileType file_type);
 
  protected:
   FileType file_type_;
