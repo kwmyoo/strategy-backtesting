@@ -20,4 +20,10 @@ add_executable(strategy_backtesting
         src/third_party/fast-cpp-csv-parser-master/csv.h
         src/main.cpp
         src/Period.h
-        src/Data/Processor/Processor.cpp src/Asset.h src/Asset.cpp src/Strategy/SimpleRebalance.h)
+        src/Data/Processor/Processor.cpp
+        src/Asset.h
+        src/Asset.cpp
+        src/Strategy/SimpleRebalance.h
+        src/Portfolio.h
+        src/Portfolio.cpp
+        src/Utilities.h)

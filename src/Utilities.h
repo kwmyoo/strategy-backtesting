@@ -15,6 +15,7 @@
 #include <string>
 
 #include "Period.h"
+#include "Strategy/Strategy.h"
 
 enum class FileType {
   CSV
@@ -83,5 +84,7 @@ class Price {
 };
 
 typedef std::deque<std::unique_ptr<Period>> HistoricalData;
+
+typedef std::unique_ptr<Strategy> StrategyFn;
 
 #endif //STRATEGY_BACKTESTING_UTILITIES_H
