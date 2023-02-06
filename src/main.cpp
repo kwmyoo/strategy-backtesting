@@ -5,12 +5,12 @@
 #include <memory>
 #include <iostream>
 
-#include "utilities.h"
-#include "data/processor/processor.h"
-#include "data/processor/csv_processor.h"
+#include "Utilities.h"
+#include "data/processor/Processor.h"
+#include "data/processor/CsvProcessor.h"
 
 int main() {
   std::unique_ptr<Processor> processor = Processor::CreateProcessor(FileType::CSV);
-  PeriodQueue periods = processor->Process("../data/snp500.csv");
+  HistoricalData periods = processor->Process("../Data/snp500.csv");
 
 }

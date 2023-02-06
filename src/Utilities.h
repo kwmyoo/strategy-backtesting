@@ -1,28 +1,39 @@
 //
-// Created by Kun Woo Yoo on 2023/01/30.
+// Created by Kun Woo Yoo on 2023/02/02.
 //
 
-#ifndef STRATEGY_BACKTESTING_INVESTING_COM_H
-#define STRATEGY_BACKTESTING_INVESTING_COM_H
+#ifndef STRATEGY_BACKTESTING_UTILITIES_H
+#define STRATEGY_BACKTESTING_UTILITIES_H
 
-#import <iomanip>
-#import <sstream>
-#import <string>
-#import <tuple>
-#import <time.h>
-#import <ctime>
+#include <ctime>
+#include <time.h>
+#include <tuple>
+#include <sstream>
+#include <iomanip>
+#include <deque>
+#include <memory>
+#include <string>
 
-#import "data/provider/csv_template.h"
+#include "Period.h"
+
+enum class FileType {
+  CSV
+};
+
+enum class TimeOrientation {
+  NORMAL, // small to big
+  INVERSED // big to small
+};
 
 class Time {
  public:
   Time() {}
 
   Time(const std::string& date_string) {
-    std::tm tm = {};
+    tm tm = {};
     std::stringstream ss(date_string);
     ss >> std::get_time(&tm, "%b %d, %Y");
-    time_ = std::mktime(&tm);
+    time_ = mktime(&tm);
   }
 
   Time(Time&& other) : time_(other.time_) {}
@@ -32,14 +43,14 @@ class Time {
     return *this;
   }
 
-  std::time_t time() const { return time_; }
+  time_t time() const { return time_; }
 
   std::string ToString() {
     return std::to_string(time_);
   }
 
  private:
-  std::time_t time_;
+  time_t time_;
 };
 
 class Price {
@@ -71,22 +82,6 @@ class Price {
   int price_;
 };
 
-class InvestingComPeriod : public Period {
- public:
-  InvestingComPeriod(Time&& time, Price&& price) : time_(std::move(time)), price_(std::move(price)) {}
+typedef std::deque<std::unique_ptr<Period>> HistoricalData;
 
-  const Time& time() const { return time_; }
-
-  const Price& price() const { return price_; }
-
-  std::string ToString() {
-    char* result;
-    return "Price: " + price_.ToString() + ", Time: " + time_.ToString();
-  }
-
- private:
-  Time time_;
-  Price price_;
-};
-
-#endif //STRATEGY_BACKTESTING_INVESTING_COM_H
+#endif //STRATEGY_BACKTESTING_UTILITIES_H

@@ -4,22 +4,20 @@ project(strategy_backtesting)
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories(src)
-#include_directories(src/data)
-#include_directories(src/data/processor)
-#include_directories(src/data/provider)
-#include_directories(src/strategies)
+#include_directories(src/Data)
+#include_directories(src/Data/Processor)
+#include_directories(src/Data/Provider)
+#include_directories(src/Strategy)
 #include_directories(src/third_party)
 #include_directories(src/third_party/fast-cpp-csv-parser-master)
 
 add_executable(strategy_backtesting
-        src/data/processor/csv_processor.cpp
-        src/data/processor/csv_processor.h
-        src/data/processor/processor.h
-        src/data/provider/investing_com.h
-        src/strategies/simple_rebalance.cpp
-        src/strategies/simple_rebalance.h
-        src/strategies/strategy.h
+        src/Data/Processor/CsvProcessor.cpp
+        src/Data/Processor/CsvProcessor.h
+        src/Data/Processor/Processor.h
+        src/Data/Provider/InvestingCom.h
+        src/Strategy/Strategy.h
         src/third_party/fast-cpp-csv-parser-master/csv.h
         src/main.cpp
-        src/data/provider/csv_template.h
-        src/data/processor/processor.cpp)
+        src/Period.h
+        src/Data/Processor/Processor.cpp src/Asset.h src/Asset.cpp src/Strategy/SimpleRebalance.h)

@@ -2,9 +2,9 @@
 // Created by Kun Woo Yoo on 2023/02/02.
 //
 
-#include "utilities.h"
-#include "data/processor/processor.h"
-#include "data/processor/csv_processor.h"
+#include "Utilities.h"
+#include "data/processor/Processor.h"
+#include "data/processor/CsvProcessor.h"
 
 std::unique_ptr<Processor> Processor::CreateProcessor(FileType file_type) {
   if (file_type == FileType::CSV) {
