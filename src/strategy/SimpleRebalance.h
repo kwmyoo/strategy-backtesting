@@ -5,11 +5,11 @@
 #ifndef STRATEGY_BACKTESTING_SIMPLEREBALANCE_H
 #define STRATEGY_BACKTESTING_SIMPLEREBALANCE_H
 
-#include "Strategy/Strategy.h"
+#include "strategy/Strategy.h"
 
 class SimpleRebalance : public Strategy {
  public:
-  int operator()(int ratio) override {
+  int operator()(int i, int ratio) override {
     return ratio;
   }
 };

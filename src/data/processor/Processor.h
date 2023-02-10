@@ -4,20 +4,21 @@
 #include <memory>
 #include <string>
 
+#include "Portfolio.h"
 #include "Utilities.h"
 
 class Processor {
  public:
   virtual ~Processor() {}
 
-  virtual HistoricalData Process(const std::string& file_name) = 0;
+  virtual PortfolioAsset process(const std::string& fileName) = 0;
 
-  static std::unique_ptr<Processor> CreateProcessor(FileType file_type);
+  static std::unique_ptr<Processor> createProcessor(FileType fileType);
 
  protected:
-  FileType file_type_;
+  FileType fileType_;
 
-  TimeOrientation date_orientation_;
+  TimeOrientation dateOrientation_;
 };
 
 #endif // DATA_PROCESSOR_PROCESSOR_HPP_

@@ -6,8 +6,8 @@
 #include "data/processor/Processor.h"
 #include "data/processor/CsvProcessor.h"
 
-std::unique_ptr<Processor> Processor::CreateProcessor(FileType file_type) {
-  if (file_type == FileType::CSV) {
+std::unique_ptr<Processor> Processor::createProcessor(FileType fileType) {
+  if (fileType == FileType::CSV) {
     return std::make_unique<CsvProcessor>();
   }
 

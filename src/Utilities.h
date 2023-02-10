@@ -10,12 +10,9 @@
 #include <tuple>
 #include <sstream>
 #include <iomanip>
-#include <deque>
 #include <memory>
 #include <string>
-
-#include "Period.h"
-#include "Strategy/Strategy.h"
+#include <vector>
 
 enum class FileType {
   CSV
@@ -46,7 +43,7 @@ class Time {
 
   time_t time() const { return time_; }
 
-  std::string ToString() {
+  std::string toString() {
     return std::to_string(time_);
   }
 
@@ -75,7 +72,7 @@ class Price {
 
   int price() { return price_; }
 
-  std::string ToString() {
+  std::string toString() {
     return std::to_string(price_);
   }
 
@@ -83,8 +80,15 @@ class Price {
   int price_;
 };
 
-typedef std::deque<std::unique_ptr<Period>> HistoricalData;
+class Period {
+ public:
+  virtual ~Period() {}
 
-typedef std::unique_ptr<Strategy> StrategyFn;
+  virtual std::string toString() = 0;
+
+  Time time_;
+
+  Price price_;
+};
 
 #endif //STRATEGY_BACKTESTING_UTILITIES_H
