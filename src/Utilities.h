@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 
+void split(std::string str, std::string splitBy, std::vector<std::string>& tokens);
+
 enum class FileType {
   CSV
 };
@@ -25,21 +27,13 @@ enum class TimeOrientation {
 
 class Time {
  public:
-  Time() {}
+  Time() = default;
 
-  Time(const std::string& date_string) {
-    tm tm = {};
-    std::stringstream ss(date_string);
-    ss >> std::get_time(&tm, "%b %d, %Y");
-    time_ = mktime(&tm);
-  }
+  Time(const std::string& date_string);
 
   Time(Time&& other) : time_(other.time_) {}
 
-  Time& operator=(Time&& other) {
-    time_ = std::move(other.time_);
-    return *this;
-  }
+  Time& operator=(Time&& other);
 
   time_t time() const { return time_; }
 
@@ -55,20 +49,11 @@ class Price {
  public:
   Price() {}
 
-  Price(const std::string& price_string) : price_(0) {
-    for (const char& c: price_string) {
-      if (c == ',') continue;
-      price_ *= 10;
-      price_ += (c - '0');
-    }
-  }
+  Price(const std::string& price_string);
 
   Price(Price&& otherPrice) : price_(otherPrice.price_) {}
 
-  Price& operator=(Price&& other) {
-    price_ = other.price_;
-    return *this;
-  }
+  Price& operator=(Price&& other);
 
   int price() { return price_; }
 

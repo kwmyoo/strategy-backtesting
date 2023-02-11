@@ -23,4 +23,4 @@ add_executable(strategy_backtesting
         src/strategy/SimpleRebalance.h
         src/Portfolio.h
         src/Portfolio.cpp
-        src/Utilities.h)
+        src/Utilities.h src/Utilities.cpp)

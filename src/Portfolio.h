@@ -5,6 +5,9 @@
 #ifndef STRATEGY_BACKTESTING_PORTFOLIO_H
 #define STRATEGY_BACKTESTING_PORTFOLIO_H
 
+#include <algorithm>
+#include <iostream>
+#include <limits.h>
 #include <utility>
 #include <vector>
 
@@ -24,7 +27,7 @@ struct Asset {
 class PortfolioAsset {
  public:
   PortfolioAsset(const std::string& name, bool normalOrientation)
-      : asset_(name), ratio_(0), quantity_(0), price_(0), normalOrientation_(normalOrientation) {}
+      : asset_(name), ratio_(25), quantity_(0), price_(0), normalOrientation_(normalOrientation) {}
 
   PortfolioAsset(PortfolioAsset&& other)
       : asset_(std::move(other.asset_)),
@@ -32,7 +35,7 @@ class PortfolioAsset {
         ratio_(other.ratio_),
         normalOrientation_(other.normalOrientation_) {}
 
-  int setCurrentPrice(int index);
+  void setCurrentPrice(int index);
 
   int getAllocatedMoney(int total);
 
@@ -66,14 +69,25 @@ class Portfolio {
 
   void adjustRatio(); // change ratio for each PortfolioAsset
 
-  void calculateFinalReturn(); // calculateFinalReturn the portfolio according to the adjusted ratio
+  void calculateFinalReturn(int start,
+                            int duration); // calculateFinalReturn the portfolio according to the adjusted ratio
+
+  int getShortestDuration() {
+    int min = INT_MAX;
+
+    for (auto& portfolioAsset: portfolioAssets_) {
+      min = std::min(min, (int) portfolioAsset.historicalData_.size());
+    }
+
+    return min;
+  }
 
   long totalMoney_;
 
+  std::vector<PortfolioAsset> portfolioAssets_; // assume that all historical data have same length
+
  private:
   StrategyFn strategyFn_;
-
-  std::vector<PortfolioAsset> portfolioAssets_;
 };
 
 #endif //STRATEGY_BACKTESTING_PORTFOLIO_H

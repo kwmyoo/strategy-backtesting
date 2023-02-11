@@ -6,12 +6,12 @@
 #include "Portfolio.h"
 #include "Utilities.h"
 
-int PortfolioAsset::setCurrentPrice(int index) {
-  return price_ = historicalData_[index]->price_.price();
+void PortfolioAsset::setCurrentPrice(int index) {
+  price_ = historicalData_[index]->price_.price();
 }
 
 int PortfolioAsset::getAllocatedMoney(int total) {
-  return total * ratio_ / price_;
+  return (total * ratio_) / 100;
 }
 
 int PortfolioAsset::buy(int allocated) {
@@ -36,28 +36,27 @@ void Portfolio::adjustRatio() {
   }
 }
 
-void Portfolio::calculateFinalReturn() {
-  std::cout << "ffff" << std::endl;
+void Portfolio::calculateFinalReturn(int start, int duration) {
+  int numDate = portfolioAssets_[0].historicalData_.size() - 1;
 
-  int numDate = portfolioAssets_[0].historicalData_.size();
-  std::cout << "gggg" << std::endl;
-
-  for (int i = 0; i < numDate; i++) {
-    std::cout << "hhhh" << std::endl;
-
+  for (int i = 0; i < duration - 1; i++) {
     adjustRatio();
-    std::cout << "iiii" << std::endl;
 
     for (auto& portfolioAsset: portfolioAssets_) {
-      totalMoney_ += portfolioAsset.sell();
-      int index = (portfolioAsset.normalOrientation_) ? i : index - i - 1;
+      int index = (portfolioAsset.normalOrientation_) ? start + i : numDate - start - i - 1;
       portfolioAsset.setCurrentPrice(index);
+      totalMoney_ += portfolioAsset.sell();
     }
-    std::cout << "jjjj" << std::endl;
 
     for (auto& portfolioAsset: portfolioAssets_) {
       int allocated = portfolioAsset.getAllocatedMoney(totalMoney_);
       totalMoney_ -= portfolioAsset.buy(allocated);
     }
+  }
+
+  for (auto& portfolioAsset: portfolioAssets_) {
+    int index = (portfolioAsset.normalOrientation_) ? start + duration : numDate - start - duration - 2;
+    portfolioAsset.setCurrentPrice(index);
+    totalMoney_ += portfolioAsset.sell();
   }
 }

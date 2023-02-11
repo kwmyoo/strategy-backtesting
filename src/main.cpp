@@ -4,30 +4,31 @@
 
 #include <memory>
 #include <iostream>
+#include <stdlib.h>
 
 #include "Portfolio.h"
 #include "Utilities.h"
 #include "data/processor/Processor.h"
-#include "data/processor/CsvProcessor.h"
 #include "strategy/SimpleRebalance.h"
 
 int main(int argc, char** argv) {
-  std::cout << "aaaa" << std::endl;
   std::unique_ptr<Processor> processor = Processor::createProcessor(FileType::CSV);
-  std::cout << "bbbb" << std::endl;
-
   std::string assets[] = {"../data/snp500.csv", "../data/ktb.csv", "../data/kospi.csv", "../data/us_treasury.csv"};
-  std::cout << "cccc" << std::endl;
 
-  Portfolio portfolio{std::make_unique<SimpleRebalance>(), 100000000};
-  std::cout << "dddd" << std::endl;
+  if (argc != 2) {
+    std::cout << "Wrong number of arguments" << std::endl;
+    std::cout << "Usage: ./strategy_backtesting <initial fund>" << std::endl;
+    return 1;
+  }
+
+  int initialFund = atoi(argv[1]);
+  Portfolio portfolio{std::make_unique<SimpleRebalance>(), initialFund};
 
   for (auto& asset: assets) {
     portfolio.addAsset(processor->process(asset));
   }
-  std::cout << "eeee" << std::endl;
 
-  portfolio.calculateFinalReturn();
-
+  int duration = portfolio.getShortestDuration();
+  portfolio.calculateFinalReturn(duration, 0, duration);
   std::cout << "Final return: " << portfolio.totalMoney_ << std::endl;
 }
