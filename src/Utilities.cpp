@@ -24,7 +24,7 @@ void split(std::string str, std::string splitBy, std::vector<std::string>& token
   }
 }
 
-Time::Time(const std::string& date_string) {
+Time::Time(const std::string& date_string) : time_(0) {
   tm tm = {};
   std::stringstream ss(date_string);
   ss >> std::get_time(&tm, "%b %d, %Y");
@@ -36,7 +36,7 @@ Time& Time::operator=(Time&& other) {
   return *this;
 }
 
-Price::Price(const std::string& price_string) {
+Price::Price(const std::string& price_string) : price_(0) {
   for (const char& c: price_string) {
     if (c == ',') continue;
     price_ *= 10;

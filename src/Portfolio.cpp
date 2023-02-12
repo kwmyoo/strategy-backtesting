@@ -37,7 +37,7 @@ void Portfolio::adjustRatio() {
 }
 
 void Portfolio::calculateFinalReturn(int start, int duration) {
-  int numDate = portfolioAssets_[0].historicalData_.size() - 1;
+  int numDate = portfolioAssets_[0].historicalData_.size();
 
   for (int i = 0; i < duration - 1; i++) {
     adjustRatio();
@@ -55,8 +55,9 @@ void Portfolio::calculateFinalReturn(int start, int duration) {
   }
 
   for (auto& portfolioAsset: portfolioAssets_) {
-    int index = (portfolioAsset.normalOrientation_) ? start + duration : numDate - start - duration - 2;
+    int index = (portfolioAsset.normalOrientation_) ? start + duration - 1 : numDate - start - duration - 1;
     portfolioAsset.setCurrentPrice(index);
-    totalMoney_ += portfolioAsset.sell();
+    int sold = portfolioAsset.sell();
+    totalMoney_ += sold;
   }
 }

@@ -15,9 +15,9 @@ int main(int argc, char** argv) {
   std::unique_ptr<Processor> processor = Processor::createProcessor(FileType::CSV);
   std::string assets[] = {"../data/snp500.csv", "../data/ktb.csv", "../data/kospi.csv", "../data/us_treasury.csv"};
 
-  if (argc != 2) {
+  if (argc != 4) {
     std::cout << "Wrong number of arguments" << std::endl;
-    std::cout << "Usage: ./strategy_backtesting <initial fund>" << std::endl;
+    std::cout << "Usage: ./strategy_backtesting <initial fund> <start> <duration>" << std::endl;
     return 1;
   }
 
@@ -28,7 +28,6 @@ int main(int argc, char** argv) {
     portfolio.addAsset(processor->process(asset));
   }
 
-  int duration = portfolio.getShortestDuration();
-  portfolio.calculateFinalReturn(duration, 0, duration);
+  portfolio.calculateFinalReturn(atoi(argv[2]), atoi(argv[3]));
   std::cout << "Final return: " << portfolio.totalMoney_ << std::endl;
 }
