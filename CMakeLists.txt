@@ -16,24 +16,30 @@ find_library(
         ${CURL_PATH}/lib
 )
 
+find_package(
+        Boost
+        1.18.0
+        REQUIRED
+)
+include_directories(${Boost_INCLUDE_DIR})
+
 add_subdirectory(src/third_party/yahoo-finance)
 
 add_executable(strategy_backtesting
-        src/data/processor/CsvProcessor.cpp
-        src/data/processor/CsvProcessor.h
-        src/data/processor/Processor.h
         src/strategy/Strategy.h
         src/third_party/fast-cpp-csv-parser-master/csv.h
         src/main.cpp
-        src/data/processor/Processor.cpp
-        src/strategy/SimpleRebalance.h
         src/Portfolio.h
         src/Portfolio.cpp
         src/Utilities.h src/Utilities.cpp
         src/YahooFinance.cpp
-        src/data/provider/CsvProvider.h)
+        src/Backtest.cpp
+        src/Backtest.h
+        src/HistoricalData.cpp
+        src/HistoricalData.h src/strategy/PairTrading.cpp src/strategy/PairTrading.h)
 
 target_link_libraries(strategy_backtesting PRIVATE ${LIB_CURL})
 target_include_directories(strategy_backtesting SYSTEM PRIVATE "${CURL_PATH}/include/curl")
 
 target_link_libraries(strategy_backtesting PRIVATE yahoo-finance)
+TARGET_LINK_LIBRARIES(strategy_backtesting LINK_PUBLIC ${Boost_LIBRARIES})

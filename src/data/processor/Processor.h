@@ -11,7 +11,7 @@ class Processor {
  public:
   virtual ~Processor() {}
 
-  virtual PortfolioAsset process(const std::string& fileName) = 0;
+  virtual Asset process(const std::string& fileName) = 0;
 
   static std::unique_ptr<Processor> createProcessor(FileType fileType);
 

@@ -17,7 +17,7 @@ class Strategy {
  public:
   virtual ~Strategy() = default;
 
-  virtual int operator()(int i, int ratio) = 0;
+  virtual int operator()(int i, int ratio, double prices[]) = 0;
 };
 
 typedef std::unique_ptr<Strategy> StrategyFn;

@@ -9,17 +9,25 @@
 #include <string>
 
 #include "curl_utils.hpp"
+#include "HistoricalData.h"
 #include "Utilities.h"
 #include "Portfolio.h"
 #include "third_party/fast-cpp-csv-parser-master/csv.h"
 
+typedef std::vector<std::unique_ptr<Period>> AssetData;
+
 struct YFSymbols {
   static constexpr auto TIGER_SNP500_ETF = "360750.KS";
+  static constexpr auto KODEX_KOSPI_ETF = "278530.KS";
+  static constexpr auto TIGER_US_BONDS_ETF = "305080.KS";
+  static constexpr auto KOSEF_KOREA_BONDS_ETF = "148070.KS";
 };
 
 class YahooFinance {
  public:
-  PortfolioAsset getAssetData(const std::string& symbol, std::time_t from, std::time_t to);
+  static AssetData getAssetData(const std::string& symbol, std::time_t from, std::time_t to);
+
+  static std::vector<double> getData(const std::string& symbol, std::time_t from, std::time_t to);
 };
 
 

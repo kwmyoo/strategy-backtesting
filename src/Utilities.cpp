@@ -3,6 +3,8 @@
 //
 
 #include <iostream>
+#include <string>
+
 #include "Utilities.h"
 
 void split(std::string str, std::string splitBy, std::vector<std::string>& tokens) {
@@ -37,11 +39,7 @@ Time& Time::operator=(Time&& other) {
 }
 
 Price::Price(const std::string& price_string) : price_(0) {
-  for (const char& c: price_string) {
-    if (c == ',') continue;
-    price_ *= 10;
-    price_ += (c - '0');
-  }
+  price_ = std::stod(price_string);
 }
 
 Price& Price::operator=(Price&& other) {

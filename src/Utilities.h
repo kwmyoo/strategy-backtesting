@@ -14,24 +14,6 @@
 #include <string>
 #include <vector>
 
-#define CSV_FORMAT_DEFAULT_TEMPLATE unsigned column_count, \
-class trim_policy = io::trim_chars<' ', '\t'>, \
-class quote_policy = io::no_quote_escape<','>, \
-class overflow_policy = io::throw_on_overflow, \
-class comment_policy = io::no_comment
-
-#define CSV_FORMAT_TEMPLATE unsigned column_count, \
-class trim_policy, \
-class quote_policy, \
-class overflow_policy, \
-class comment_policy
-
-#define CSV_FORMAT column_count, \
-trim_policy, \
-quote_policy, \
-overflow_policy, \
-comment_policy
-
 void split(std::string str, std::string splitBy, std::vector<std::string>& tokens);
 
 enum class FileType {
@@ -73,14 +55,16 @@ class Price {
 
   Price& operator=(Price&& other);
 
-  int price() { return price_; }
+  double price() { return price_; }
+
+  operator double() { return price_; }
 
   std::string toString() {
     return std::to_string(price_);
   }
 
  private:
-  int price_;
+  double price_;
 };
 
 class Period {
@@ -97,6 +81,8 @@ class Period {
   const Time& time() const { return time_; }
 
   const Price& price() const { return price_; }
+
+  operator double() { return price_.price(); }
 
   std::string toString() {
     return "Price: " + price_.toString() + ", Time: " + time_.toString();
