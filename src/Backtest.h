@@ -15,7 +15,9 @@
 class Backtest {
  public:
   Backtest(StrategyFn&& strategyFn, double initialBalance) :
-      portfolio_(std::move(strategyFn), initialBalance) {};
+      portfolio_(std::move(strategyFn), initialBalance),
+      numAssets_(0),
+      numPeriods_(0) {};
 
   void initialize(const std::vector<std::string>& assetNames, std::time_t from, std::time_t to);
 
@@ -24,6 +26,8 @@ class Backtest {
   void sellAssetsAtPeriod(int period);
 
   void buyAssetsAtPeriod(int period);
+
+  void getCurrentPrices(int period);
 
   void execute();
 
@@ -34,9 +38,11 @@ class Backtest {
 
   Portfolio portfolio_;
 
-  int numAssets;
+  std::vector<double> currentPrices_;
 
-  int numPeriods;
+  int numAssets_;
+
+  int numPeriods_;
 };
 
 

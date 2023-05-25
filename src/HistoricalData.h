@@ -18,7 +18,7 @@ class HistoricalData {
 
   void addAssetData(const std::string& symbol, std::time_t from, std::time_t to);
 
-  int getAssetPriceAtPeriod(int assetNum, int period);
+  double getAssetPriceAtPeriod(int assetNum, int period);
 };
 
 

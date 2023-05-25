@@ -16,8 +16,8 @@
 int main(int argc, char** argv) {
   Backtest backtest(
       std::make_unique<PairTrading>(
-          YFSymbols::TIGER_US_BONDS_ETF,
-          YFSymbols::KOSEF_KOREA_BONDS_ETF,
+          YFSymbols::EXXON,
+          YFSymbols::SHELL,
           dateToEpoch("2021-01-01"),
           dateToEpoch("2021-12-31"),
           1.0),
@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
   std::vector<std::string> symbols;
 //  symbols.push_back(YFSymbols::TIGER_SNP500_ETF);
 //  symbols.push_back(YFSymbols::KODEX_KOSPI_ETF);
-  symbols.push_back(YFSymbols::TIGER_US_BONDS_ETF);
-  symbols.push_back(YFSymbols::KOSEF_KOREA_BONDS_ETF);
+  symbols.push_back(YFSymbols::EXXON);
+  symbols.push_back(YFSymbols::SHELL);
 
   backtest.initialize(symbols, dateToEpoch("2022-01-01"), dateToEpoch("2022-12-31"));
   backtest.execute();

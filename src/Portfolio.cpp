@@ -25,7 +25,7 @@ void Portfolio::addAsset(Asset&& portfolioAsset) {
   assets_.emplace_back(std::move(portfolioAsset));
 }
 
-void Portfolio::adjustRatio(double prices[]) {
+void Portfolio::adjustRatio(std::vector<double>& prices) {
   for (int i = 0; i < assets_.size(); i++) {
     Asset& portfolioAsset = assets_[i];
     portfolioAsset.ratio_ = (*strategyFn_)(i, portfolioAsset.ratio_, prices);

@@ -27,7 +27,7 @@ AssetData YahooFinance::getAssetData(const std::string& symbol, std::time_t from
   return periods;
 }
 
-std::vector<double> getData(const std::string& symbol, std::time_t from, std::time_t to) {
+std::vector<double> YahooFinance::getData(const std::string& symbol, std::time_t from, std::time_t to) {
   std::istringstream csvStream(downloadYahooCsv(symbol, from, to, "1d"));
   auto csvReader = io::CSVReader<2>(symbol, csvStream);
   csvReader.read_header(io::ignore_extra_column, "Date", "Close");

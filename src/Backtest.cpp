@@ -7,19 +7,19 @@
 #include "Backtest.h"
 
 void Backtest::initialize(const std::vector<std::string>& assetNames, std::time_t from, std::time_t to) {
-  numAssets = assetNames.size();
-  for (int i = 0; i < numAssets; i++) {
+  numAssets_ = assetNames.size();
+  for (int i = 0; i < numAssets_; i++) {
     portfolio_.addAsset(Asset{assetNames[i]});
     historicalData_.addAssetData(assetNames[i], from, to);
 
-    std::cout << "num periods: " << historicalData_.data_[i].size() << std::endl;
-    if (numPeriods == 0) {
-      numPeriods = historicalData_.data_[i].size();
+    if (numPeriods_ == 0) {
+      numPeriods_ = historicalData_.data_[i].size();
     } else {
-      std::cout << "numPeriods: " << numPeriods << std::endl;
-      assert(numPeriods == historicalData_.data_[i].size());
+      assert(numPeriods_ == historicalData_.data_[i].size());
     }
   }
+
+  currentPrices_ = std::vector<double>(numAssets_, 0.0);
 }
 
 Asset& Backtest::getAsset(int assetNum) {
@@ -27,32 +27,38 @@ Asset& Backtest::getAsset(int assetNum) {
 }
 
 void Backtest::sellAssetsAtPeriod(int period) {
-  for (int assetNum = 0; assetNum < numAssets; assetNum++) {
+  for (int assetNum = 0; assetNum < numAssets_; assetNum++) {
     Asset& asset = getAsset(assetNum);
     int quantity = asset.sell();
-    int price = historicalData_.getAssetPriceAtPeriod(assetNum, period);
-    portfolio_.balance_ += quantity * price;
+    portfolio_.balance_ += quantity * currentPrices_[assetNum];
   }
 }
 
 void Backtest::buyAssetsAtPeriod(int period) {
   double totalBalance = portfolio_.balance_;
-  for (int assetNum = 0; assetNum < numAssets; assetNum++) {
+  for (int assetNum = 0; assetNum < numAssets_; assetNum++) {
     Asset& asset = getAsset(assetNum);
-    int allocated = asset.getAllocatedMoney(totalBalance);
-    int price = historicalData_.getAssetPriceAtPeriod(assetNum, period);
-    portfolio_.balance_ -= asset.buy(allocated, price);
+    double allocated = asset.getAllocatedMoney(totalBalance);
+    portfolio_.balance_ -= asset.buy(allocated, currentPrices_[assetNum]);
+  }
+}
+
+void Backtest::getCurrentPrices(int period) {
+  for (int assetNum = 0; assetNum < numAssets_; assetNum++) {
+    double price = historicalData_.getAssetPriceAtPeriod(assetNum, period);
+    currentPrices_[assetNum] = price;
   }
 }
 
 void Backtest::execute() {
-  for (int period = 0; period < numPeriods - 1; period++) {
-    portfolio_.adjustRatio();
+  for (int period = 0; period < numPeriods_ - 1; period++) {
+    getCurrentPrices(period);
+    portfolio_.adjustRatio(currentPrices_);
     sellAssetsAtPeriod(period);
     buyAssetsAtPeriod(period);
   }
 
-  sellAssetsAtPeriod(numPeriods - 1);
+  sellAssetsAtPeriod(numPeriods_ - 1);
 }
 
 long Backtest::getBalance() {

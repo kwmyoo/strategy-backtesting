@@ -33,6 +33,7 @@ add_executable(strategy_backtesting
         src/Portfolio.cpp
         src/Utilities.h src/Utilities.cpp
         src/YahooFinance.cpp
+        src/YahooFinance.h
         src/Backtest.cpp
         src/Backtest.h
         src/HistoricalData.cpp

@@ -9,7 +9,7 @@
 
 class SimpleRebalance : public Strategy {
  public:
-  int operator()(int i, int ratio, double prices[]) override {
+  int operator()(int i, int ratio, std::vector<double>& prices) override {
     return ratio;
   }
 };

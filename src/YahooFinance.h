@@ -21,6 +21,11 @@ struct YFSymbols {
   static constexpr auto KODEX_KOSPI_ETF = "278530.KS";
   static constexpr auto TIGER_US_BONDS_ETF = "305080.KS";
   static constexpr auto KOSEF_KOREA_BONDS_ETF = "148070.KS";
+
+  static constexpr auto MICROSOFT = "MSFT";
+  static constexpr auto BERKSHIRE_HATHAWAY = "BRK-B";
+  static constexpr auto EXXON = "XOM";
+  static constexpr auto SHELL = "SHEL";
 };
 
 class YahooFinance {

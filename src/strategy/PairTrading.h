@@ -27,7 +27,7 @@ class PairTrading : public Strategy {
 
   double calculateZScore(double price1, double price2);
 
-  int operator()(int i, int ratio, double prices[]) override;
+  int operator()(int i, int ratio, std::vector<double>& prices) override;
 
  private:
   std::vector<std::vector<double>> prices_;
@@ -40,7 +40,7 @@ class PairTrading : public Strategy {
 
   double spreadStd_;
 
-  double limit_
+  double limit_;
 };
 
 

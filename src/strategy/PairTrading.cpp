@@ -17,7 +17,7 @@ PairTrading::PairTrading(const std::string& symbol1, const std::string& symbol2,
                          double limit) : limit_(limit) {
   prices_.emplace_back(YahooFinance::getData(symbol1, from, to));
   prices_.emplace_back(YahooFinance::getData(symbol2, from, to));
-  assert(prices_[0].size() == price_[1].size());
+  assert(prices_[0].size() == prices_[1].size());
 
   std::cout << "Covariance of the two stocks is: " << getCovariance() << std::endl;
 }
@@ -61,7 +61,7 @@ double PairTrading::calculateZScore(double price1, double price2) {
   return (spread - spreadMean_) / spreadStd_;
 }
 
-int PairTrading::operator()(int i, int ratio, double* prices) {
+int PairTrading::operator()(int i, int ratio, std::vector<double>& prices) {
   double zScore = calculateZScore(prices[0], prices[1]);
 
   if (zScore >= limit_) {

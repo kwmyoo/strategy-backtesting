@@ -61,7 +61,7 @@ class Portfolio {
 
   void addAsset(Asset&& portfolioAsset);
 
-  void adjustRatio(double prices[]); // change ratio for each Asset
+  void adjustRatio(std::vector<double>& prices); // change ratio for each Asset
 };
 
 #endif //STRATEGY_BACKTESTING_PORTFOLIO_H
