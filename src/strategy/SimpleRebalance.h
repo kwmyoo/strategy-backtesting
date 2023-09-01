@@ -5,12 +5,26 @@
 #ifndef STRATEGY_BACKTESTING_SIMPLEREBALANCE_H
 #define STRATEGY_BACKTESTING_SIMPLEREBALANCE_H
 
+#include "Backtest.h"
 #include "strategy/Strategy.h"
+
+class SimpleRebalanceInput : public StrategyInput {
+ public:
+  SimpleRebalanceInput(Backtest* backtest) : StrategyInput(backtest->ratios_) {
+    for (auto& ratio: currentRatios_) {
+      ratio = 100 / backtest->numAssets_;
+    }
+  }
+
+  void getInputAtPeriodWithRatio(int period) override {
+    StrategyInput::getInputAtPeriodWithRatio(period);
+  }
+};
 
 class SimpleRebalance : public Strategy {
  public:
-  int operator()(int i, int ratio, std::vector<double>& prices) override {
-    return ratio;
+  int operator()(int assetNum, std::shared_ptr<StrategyInput> input) override {
+    return input->currentRatios_[assetNum];
   }
 };
 

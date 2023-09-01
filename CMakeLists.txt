@@ -4,6 +4,7 @@ project(strategy_backtesting)
 set(CMAKE_CXX_STANDARD 17)
 set(CURL_PATH "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr")
 set(YAHOO_FINANCE "src/third_party/yahoo-finance")
+set(HOMEBREW_PATH "/opt/homebrew/opt")
 
 include_directories(src)
 include_directories(src/third_party/yahoo-finance/src)
@@ -37,7 +38,7 @@ add_executable(strategy_backtesting
         src/Backtest.cpp
         src/Backtest.h
         src/HistoricalData.cpp
-        src/HistoricalData.h src/strategy/PairTrading.cpp src/strategy/PairTrading.h)
+        src/HistoricalData.h src/strategy/PairTrading.cpp src/strategy/PairTrading.h src/strategy/MovingAverageCrossover.cpp src/strategy/MovingAverageCrossover.h)
 
 target_link_libraries(strategy_backtesting PRIVATE ${LIB_CURL})
 target_include_directories(strategy_backtesting SYSTEM PRIVATE "${CURL_PATH}/include/curl")

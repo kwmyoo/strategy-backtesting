@@ -13,6 +13,21 @@
 
 using namespace boost::math::statistics;
 
+PairTradingInput::PairTradingInput(Backtest* backtest)
+    : StrategyInput(backtest->ratios_),
+      data_(backtest->historicalData_.data_),
+      currentPrices_(backtest->numAssets_),
+      numAssets_(backtest->numAssets_) {
+  currentRatios_[0] = 0;
+  currentRatios_[1] = 0;
+}
+
+void PairTradingInput::getInputAtPeriodWithRatio(int period) {
+  for (int assetNum = 0; assetNum < numAssets_; assetNum++) {
+    currentPrices_[assetNum] = data_[assetNum][period]->price_.price();
+  }
+}
+
 PairTrading::PairTrading(const std::string& symbol1, const std::string& symbol2, std::time_t from, std::time_t to,
                          double limit) : limit_(limit) {
   prices_.emplace_back(YahooFinance::getData(symbol1, from, to));
@@ -61,23 +76,25 @@ double PairTrading::calculateZScore(double price1, double price2) {
   return (spread - spreadMean_) / spreadStd_;
 }
 
-int PairTrading::operator()(int i, int ratio, std::vector<double>& prices) {
-  double zScore = calculateZScore(prices[0], prices[1]);
+int PairTrading::operator()(int assetNum, std::shared_ptr<StrategyInput> input) {
+  std::shared_ptr<PairTradingInput> newInput =
+      std::reinterpret_pointer_cast<PairTradingInput>(input);
+  double zScore = calculateZScore(newInput->currentPrices_[0], newInput->currentPrices_[1]);
 
   if (zScore >= limit_) {
-    if (i == 0) {
+    if (assetNum == 0) {
       return 100;
-    } else if (i == 1) {
+    } else if (assetNum == 1) {
       return 0;
     }
   } else if (zScore <= -1 * limit_) {
-    if (i == 0) {
+    if (assetNum == 0) {
       return 0;
-    } else if (i == 1) {
+    } else if (assetNum == 1) {
       return 100;
     }
   }
 
-  return ratio;
+  return input->currentRatios_[assetNum];
 }
 

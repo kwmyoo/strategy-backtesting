@@ -8,18 +8,17 @@
 #include <vector>
 #include <string>
 
+#include "strategy/Strategy.h"
 #include "HistoricalData.h"
 #include "Portfolio.h"
 #include "Utilities.h"
 
 class Backtest {
  public:
-  Backtest(StrategyFn&& strategyFn, double initialBalance) :
-      portfolio_(std::move(strategyFn), initialBalance),
-      numAssets_(0),
-      numPeriods_(0) {};
-
-  void initialize(const std::vector<std::string>& assetNames, std::time_t from, std::time_t to);
+  Backtest(StrategyFn&& strategyFn,
+           double initialBalance,
+           const std::vector<std::string>& assetNames,
+           const char* fromStr, const char* toStr);
 
   Asset& getAsset(int assetNum);
 
@@ -29,20 +28,28 @@ class Backtest {
 
   void getCurrentPrices(int period);
 
+  // change ratio for each asset
+  void adjustRatio(std::vector<double>& prices, int period);
+
   void execute();
 
-  long getBalance();
+  StrategyFn strategyFn_;
 
- private:
+  std::shared_ptr<StrategyInput> strategyInput_;
+
   HistoricalData historicalData_;
 
   Portfolio portfolio_;
 
   std::vector<double> currentPrices_;
 
+  std::vector<int> ratios_;
+
   int numAssets_;
 
   int numPeriods_;
+
+  double totalBalance_;
 };
 
 

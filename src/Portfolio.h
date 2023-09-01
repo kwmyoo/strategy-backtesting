@@ -19,8 +19,6 @@ class Asset {
  public:
   std::string name_;
 
-  int ratio_; // number between 0 - 100 (percentage)
-
   int quantity_;
 
   int price_;
@@ -28,15 +26,14 @@ class Asset {
   friend class Portfolio;
 
   explicit Asset(const std::string& name)
-      : name_(name), ratio_(25), quantity_(0), price_(0) {}
+      : name_(name), quantity_(0), price_(0) {}
 
   Asset(Asset&& other)
       : name_(std::move(other.name_)),
-        ratio_(other.ratio_),
         quantity_(other.quantity_),
         price_(other.price_) {}
 
-  double getAllocatedMoney(double total) const;
+  double getAllocatedMoney(double total, int ratio) const;
 
   // buy as much asset as possible w.r.t. current price and given total money, return spent
   double buy(double allocated, double price);
@@ -47,21 +44,11 @@ class Asset {
 
 class Portfolio {
  public:
-  double balance_;
-
-  StrategyFn strategyFn_;
-
   std::vector<Asset> assets_; // assume that all historical data have same length
 
   Portfolio() {}
 
-  Portfolio(StrategyFn&& strategyFn, long totalMoney)
-      : strategyFn_(std::move(strategyFn)),
-        balance_(totalMoney) {}
-
   void addAsset(Asset&& portfolioAsset);
-
-  void adjustRatio(std::vector<double>& prices); // change ratio for each Asset
 };
 
 #endif //STRATEGY_BACKTESTING_PORTFOLIO_H

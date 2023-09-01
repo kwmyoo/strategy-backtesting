@@ -1,12 +1,23 @@
-//
 // Created by Kun Woo Yoo on 2023/05/09.
-//
+
 
 #include <cassert>
+#include <utility>
 
+#include "time_utils.hpp"
 #include "Backtest.h"
 
-void Backtest::initialize(const std::vector<std::string>& assetNames, std::time_t from, std::time_t to) {
+Backtest::Backtest(StrategyFn&& strategyFn,
+                   double initialBalance,
+                   const std::vector<std::string>& assetNames,
+                   const char* fromStr, const char* toStr)
+    : strategyFn_(std::move(strategyFn)),
+      numAssets_(0),
+      numPeriods_(0),
+      totalBalance_(initialBalance) {
+  std::time_t from = dateToEpoch(fromStr);
+  std::time_t to = dateToEpoch(toStr);
+
   numAssets_ = assetNames.size();
   for (int i = 0; i < numAssets_; i++) {
     portfolio_.addAsset(Asset{assetNames[i]});
@@ -19,6 +30,7 @@ void Backtest::initialize(const std::vector<std::string>& assetNames, std::time_
     }
   }
 
+  ratios_ = std::vector<int>(numAssets_);
   currentPrices_ = std::vector<double>(numAssets_, 0.0);
 }
 
@@ -30,16 +42,15 @@ void Backtest::sellAssetsAtPeriod(int period) {
   for (int assetNum = 0; assetNum < numAssets_; assetNum++) {
     Asset& asset = getAsset(assetNum);
     int quantity = asset.sell();
-    portfolio_.balance_ += quantity * currentPrices_[assetNum];
+    totalBalance_ += quantity * currentPrices_[assetNum];
   }
 }
 
 void Backtest::buyAssetsAtPeriod(int period) {
-  double totalBalance = portfolio_.balance_;
   for (int assetNum = 0; assetNum < numAssets_; assetNum++) {
     Asset& asset = getAsset(assetNum);
-    double allocated = asset.getAllocatedMoney(totalBalance);
-    portfolio_.balance_ -= asset.buy(allocated, currentPrices_[assetNum]);
+    double allocated = asset.getAllocatedMoney(totalBalance_, ratios_[assetNum]);
+    totalBalance_ -= asset.buy(allocated, currentPrices_[assetNum]);
   }
 }
 
@@ -50,17 +61,21 @@ void Backtest::getCurrentPrices(int period) {
   }
 }
 
+void Backtest::adjustRatio(std::vector<double>& prices, int period) {
+  strategyInput_->getInputAtPeriodWithRatio(period);
+
+  for (int assetNum = 0; assetNum < numAssets_; assetNum++) {
+    ratios_[assetNum] = (*strategyFn_)(assetNum, strategyInput_);
+  }
+}
+
 void Backtest::execute() {
   for (int period = 0; period < numPeriods_ - 1; period++) {
     getCurrentPrices(period);
-    portfolio_.adjustRatio(currentPrices_);
+    adjustRatio(currentPrices_, period);
     sellAssetsAtPeriod(period);
     buyAssetsAtPeriod(period);
   }
 
   sellAssetsAtPeriod(numPeriods_ - 1);
-}
-
-long Backtest::getBalance() {
-  return portfolio_.balance_;
 }

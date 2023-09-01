@@ -5,11 +5,27 @@
 #ifndef STRATEGY_BACKTESTING_PAIRTRADING_H
 #define STRATEGY_BACKTESTING_PAIRTRADING_H
 
+#include <memory>
 #include <string>
 #include <vector>
 
+#include "Backtest.h"
 #include "strategy/Strategy.h"
+#include "HistoricalData.h"
 #include "Utilities.h"
+
+class PairTradingInput : public StrategyInput {
+ public:
+  int numAssets_;
+
+  std::vector<AssetData>& data_;
+
+  std::vector<double> currentPrices_;
+
+  PairTradingInput(Backtest* backtest);
+
+  void getInputAtPeriodWithRatio(int period) override;
+};
 
 /*
  * The following algorithm implements pair trading method introduced in
@@ -21,13 +37,15 @@ class PairTrading : public Strategy {
 
   double getCovariance();
 
+//  double getCointegration();
+
   void calculateHedgeRatio();
 
   void calculateSpreadMeanAndStd();
 
   double calculateZScore(double price1, double price2);
 
-  int operator()(int i, int ratio, std::vector<double>& prices) override;
+  int operator()(int assetNum, std::shared_ptr<StrategyInput> input) override;
 
  private:
   std::vector<std::vector<double>> prices_;

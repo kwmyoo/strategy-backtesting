@@ -6,8 +6,8 @@
 
 #include "Portfolio.h"
 
-double Asset::getAllocatedMoney(double total) const {
-  return floor((total * ratio_) / 100.0);
+double Asset::getAllocatedMoney(double total, int ratio) const {
+  return floor((total * ratio) / 100.0);
 }
 
 double Asset::buy(double allocated, double price) {
@@ -23,11 +23,4 @@ double Asset::sell() {
 
 void Portfolio::addAsset(Asset&& portfolioAsset) {
   assets_.emplace_back(std::move(portfolioAsset));
-}
-
-void Portfolio::adjustRatio(std::vector<double>& prices) {
-  for (int i = 0; i < assets_.size(); i++) {
-    Asset& portfolioAsset = assets_[i];
-    portfolioAsset.ratio_ = (*strategyFn_)(i, portfolioAsset.ratio_, prices);
-  }
 }

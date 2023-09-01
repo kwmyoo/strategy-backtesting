@@ -26,6 +26,8 @@ struct YFSymbols {
   static constexpr auto BERKSHIRE_HATHAWAY = "BRK-B";
   static constexpr auto EXXON = "XOM";
   static constexpr auto SHELL = "SHEL";
+
+  static constexpr auto SNP_500 = "%5EGSPC";
 };
 
 class YahooFinance {
