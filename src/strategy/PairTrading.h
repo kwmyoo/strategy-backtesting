@@ -33,7 +33,9 @@ class PairTradingInput : public StrategyInput {
  */
 class PairTrading : public Strategy {
  public:
-  PairTrading(const std::string& symbol1, const std::string& symbol2, std::time_t from, std::time_t to, double limit);
+  PairTrading(const std::string& symbol1, const std::string& symbol2,
+              const char* fromStr, const char* toStr,
+              double limit);
 
   double getCovariance();
 

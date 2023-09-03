@@ -10,6 +10,7 @@
 
 #include "PairTrading.h"
 #include "YahooFinance.h"
+#include "time_utils.hpp"
 
 using namespace boost::math::statistics;
 
@@ -28,8 +29,11 @@ void PairTradingInput::getInputAtPeriodWithRatio(int period) {
   }
 }
 
-PairTrading::PairTrading(const std::string& symbol1, const std::string& symbol2, std::time_t from, std::time_t to,
+PairTrading::PairTrading(const std::string& symbol1, const std::string& symbol2,
+                         const char* fromStr, const char* toStr,
                          double limit) : limit_(limit) {
+  std::time_t from = dateToEpoch(fromStr);
+  std::time_t to = dateToEpoch(toStr);
   prices_.emplace_back(YahooFinance::getData(symbol1, from, to));
   prices_.emplace_back(YahooFinance::getData(symbol2, from, to));
   assert(prices_[0].size() == prices_[1].size());
@@ -94,6 +98,7 @@ int PairTrading::operator()(int assetNum, std::shared_ptr<StrategyInput> input) 
       return 100;
     }
   }
+  std::cout << "ccc" << std::endl;
 
   return input->currentRatios_[assetNum];
 }

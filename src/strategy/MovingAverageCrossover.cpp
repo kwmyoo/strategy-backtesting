@@ -9,14 +9,11 @@
 MovingAverageCrossoverInput::MovingAverageCrossoverInput(Backtest* backtest)
     : StrategyInput(backtest->ratios_),
       data_(backtest->historicalData_.data_[0]) {
-  std::cout << "222" << std::endl;
   shortTermTotal_ = 0.0;
   shortTermMovingAverage_ = 0.0;
   longTermTotal_ = 0.0;
   longTermMovingAverage_ = 0.0;
-  std::cout << currentRatios_.size() << std::endl;
-  currentRatios_[0] = 0;
-  std::cout << "333" << std::endl;
+  currentRatios_[0] = 100;
 }
 
 void MovingAverageCrossoverInput::getInputAtPeriodWithRatio(int period) {
@@ -71,10 +68,13 @@ double MovingAverageCrossover::updateShortTermMovingAverage(int i, double price)
 MovingAverageStatus
 MovingAverageCrossover::getCurrentStatus(double shortTermMovingAverage, double longTermMovingAverage) {
   if (shortTermMovingAverage_ < longTermMovingAverage_) {
+    std::cout << "l" << std::endl;
     return MovingAverageStatus::LONG_TERM_AVERAGE_HIGHER;
   } else if (shortTermMovingAverage_ == longTermMovingAverage_) {
+    std::cout << "e" << std::endl;
     return MovingAverageStatus::EQUAL;
   } else {
+    std::cout << "s" << std::endl;
     return MovingAverageStatus::SHORT_TERM_AVERAGE_HIGHER;
   }
 }

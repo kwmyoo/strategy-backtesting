@@ -16,13 +16,10 @@
 class StrategyInput {
  public:
   std::vector<int>& currentRatios_;
+
   int period_;
 
-  StrategyInput(std::vector<int>& ratios) : currentRatios_(ratios) {
-
-    std::cout << "111" << std::endl;
-    std::cout << currentRatios_.size() << std::endl;
-  }
+  StrategyInput(std::vector<int>& ratios) : currentRatios_(ratios) {}
 
   //! TODO: modify function so that it computes input for specific asset at a time period
   virtual void getInputAtPeriodWithRatio(int period) {
