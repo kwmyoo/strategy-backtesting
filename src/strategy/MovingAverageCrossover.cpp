@@ -35,46 +35,16 @@ void MovingAverageCrossoverInput::getInputAtPeriodWithRatio(int period) {
 }
 
 MovingAverageCrossover::MovingAverageCrossover()
-    : shortTermWindow_(SHORT_TERM_MA_PERIOD),
-      longTermWindow_(LONG_TERM_MA_PERIOD),
-      status_(MovingAverageStatus::INITIAL) {}
+    : status_(MovingAverageStatus::INITIAL) {}
 
-double MovingAverageCrossover::updateLongTermMovingAverage(int i, double price) {
-  longTermTotal_ += price;
-  longTermWindow_.push_back(price);
-
-  if (i >= LONG_TERM_MA_PERIOD) {
-    longTermTotal_ -= longTermWindow_.front();
-    longTermWindow_.pop_front();
-  }
-
-  longTermMovingAverage_ = longTermTotal_ / (double) LONG_TERM_MA_PERIOD;
-  return longTermMovingAverage_;
-}
-
-double MovingAverageCrossover::updateShortTermMovingAverage(int i, double price) {
-  shortTermTotal_ += price;
-  shortTermWindow_.push_back(price);
-
-  if (i >= SHORT_TERM_MA_PERIOD) {
-    shortTermTotal_ -= shortTermWindow_.front();
-    shortTermWindow_.pop_front();
-  }
-
-  shortTermMovingAverage_ = shortTermTotal_ / (double) SHORT_TERM_MA_PERIOD;
-  return shortTermMovingAverage_;
-}
 
 MovingAverageStatus
 MovingAverageCrossover::getCurrentStatus(double shortTermMovingAverage, double longTermMovingAverage) {
-  if (shortTermMovingAverage_ < longTermMovingAverage_) {
-    std::cout << "l" << std::endl;
+  if (shortTermMovingAverage < longTermMovingAverage) {
     return MovingAverageStatus::LONG_TERM_AVERAGE_HIGHER;
-  } else if (shortTermMovingAverage_ == longTermMovingAverage_) {
-    std::cout << "e" << std::endl;
+  } else if (shortTermMovingAverage == longTermMovingAverage) {
     return MovingAverageStatus::EQUAL;
   } else {
-    std::cout << "s" << std::endl;
     return MovingAverageStatus::SHORT_TERM_AVERAGE_HIGHER;
   }
 }

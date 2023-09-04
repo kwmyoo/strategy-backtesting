@@ -37,10 +37,6 @@ class MovingAverageCrossoverInput : public StrategyInput {
 
   double longTermMovingAverage_;
 
-  double updateShortTermMovingAverage(int i, double price);
-
-  double updateLongTermMovingAverage(int i, double price);
-
   MovingAverageCrossoverInput(
       Backtest* backtest);
 
@@ -59,22 +55,6 @@ class MovingAverageCrossover : public Strategy {
 
  private:
   MovingAverageStatus status_;
-
-  double shortTermTotal_;
-
-  double shortTermMovingAverage_;
-
-  std::list<double> shortTermWindow_;
-
-  double longTermTotal_;
-
-  double longTermMovingAverage_;
-
-  std::list<double> longTermWindow_;
-
-  double updateShortTermMovingAverage(int i, double price);
-
-  double updateLongTermMovingAverage(int i, double price);
 
   MovingAverageStatus getCurrentStatus(double shortTermMovingAverage, double longTermMovingAverage);
 };
