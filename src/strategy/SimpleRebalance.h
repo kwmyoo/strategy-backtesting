@@ -16,8 +16,8 @@ class SimpleRebalanceInput : public StrategyInput {
     }
   }
 
-  void getInputAtPeriodWithRatio(int period) override {
-    StrategyInput::getInputAtPeriodWithRatio(period);
+  void getInputAtPeriod(int period) override {
+    StrategyInput::getInputAtPeriod(period);
   }
 };
 

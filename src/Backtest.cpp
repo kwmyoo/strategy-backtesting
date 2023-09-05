@@ -62,7 +62,7 @@ void Backtest::getCurrentPrices(int period) {
 }
 
 void Backtest::adjustRatio(std::vector<double>& prices, int period) {
-  strategyInput_->getInputAtPeriodWithRatio(period);
+  strategyInput_->getInputAtPeriod(period);
 
   for (int assetNum = 0; assetNum < numAssets_; assetNum++) {
     ratios_[assetNum] = (*strategyFn_)(assetNum, strategyInput_);

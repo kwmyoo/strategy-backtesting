@@ -38,7 +38,7 @@ add_executable(strategy_backtesting
         src/Backtest.cpp
         src/Backtest.h
         src/HistoricalData.cpp
-        src/HistoricalData.h src/strategy/PairTrading.cpp src/strategy/PairTrading.h src/strategy/MovingAverageCrossover.cpp src/strategy/MovingAverageCrossover.h)
+        src/HistoricalData.h src/strategy/PairTrading.cpp src/strategy/PairTrading.h src/strategy/MovingAverageCrossover.cpp src/strategy/MovingAverageCrossover.h src/strategy/MeanReversion.cpp src/strategy/MeanReversion.h)
 
 target_link_libraries(strategy_backtesting PRIVATE ${LIB_CURL})
 target_include_directories(strategy_backtesting SYSTEM PRIVATE "${CURL_PATH}/include/curl")

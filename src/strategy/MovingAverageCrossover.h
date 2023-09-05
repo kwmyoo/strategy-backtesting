@@ -37,15 +37,14 @@ class MovingAverageCrossoverInput : public StrategyInput {
 
   double longTermMovingAverage_;
 
-  MovingAverageCrossoverInput(
-      Backtest* backtest);
+  MovingAverageCrossoverInput(Backtest* backtest);
 
-  void getInputAtPeriodWithRatio(int period) override;
+  void getInputAtPeriod(int period) override;
 };
 
 /*
  * The following strategy implements a moving average crossover trading strategy.
- * More specifically, it uses golden cross strategy, which uses 50-day and 200-day simple moving  average for signals.
+ * More specifically, it uses golden cross and death cross strategy, which uses 50-day and 200-day simple moving  average for signals.
  */
 class MovingAverageCrossover : public Strategy {
  public:

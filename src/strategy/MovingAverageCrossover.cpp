@@ -16,7 +16,7 @@ MovingAverageCrossoverInput::MovingAverageCrossoverInput(Backtest* backtest)
   currentRatios_[0] = 100;
 }
 
-void MovingAverageCrossoverInput::getInputAtPeriodWithRatio(int period) {
+void MovingAverageCrossoverInput::getInputAtPeriod(int period) {
   period_ = period;
   ratio_ = currentRatios_[0];
   double currentPrice = data_[period]->price_.price();

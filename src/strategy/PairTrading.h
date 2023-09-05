@@ -24,7 +24,7 @@ class PairTradingInput : public StrategyInput {
 
   PairTradingInput(Backtest* backtest);
 
-  void getInputAtPeriodWithRatio(int period) override;
+  void getInputAtPeriod(int period) override;
 };
 
 /*

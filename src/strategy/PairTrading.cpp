@@ -23,7 +23,7 @@ PairTradingInput::PairTradingInput(Backtest* backtest)
   currentRatios_[1] = 0;
 }
 
-void PairTradingInput::getInputAtPeriodWithRatio(int period) {
+void PairTradingInput::getInputAtPeriod(int period) {
   for (int assetNum = 0; assetNum < numAssets_; assetNum++) {
     currentPrices_[assetNum] = data_[assetNum][period]->price_.price();
   }
