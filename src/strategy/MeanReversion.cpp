@@ -54,6 +54,13 @@ MeanReversion::MeanReversion() {
   buyPeriod_ = -1;
 }
 
+bool MeanReversion::isBuySignal(std::shared_ptr<MeanReversionInput> input) {
+  return (input->currPrice_ >= input->movingAverage_) && (input->rsi_ >= input->rsiBuyThreshold_);
+}
+
+bool MeanReversion::isSellSignal(std::shared_ptr<MeanReversionInput> input) {
+  return (input->rsi_ >= input->rsiSellThreshold_) || 
+
 int MeanReversion::operator()(int assetNum, std::shared_ptr<StrategyInput> input) {
   if (input->period_ < MOVING_AVERAGE_PERIOD - 1) {
     return 0;
@@ -64,6 +71,6 @@ int MeanReversion::operator()(int assetNum, std::shared_ptr<StrategyInput> input
 
   // if the portfolio currently does not hold the asset
   if (buyPeriod_ < 0) {
-
+    if (
   }
 }
