@@ -47,11 +47,17 @@ class MeanReversion : public Strategy {
 
   double rsiSellThreshold_ = 40.0;
 
+  int sellPeriodThreshold_ = 10;
+
   int buyPeriod_; // if buy period < 0, then the portfolio currently does not hold the asset
 
   MeanReversion();
 
   int operator()(int assetNum, std::shared_ptr<StrategyInput> input) override;
+
+  bool isBuySignal(std::shared_ptr<MeanReversionInput> input);
+
+  bool isSellSignal(std::shared_ptr<MeanReversionInput> input);
 };
 
 
