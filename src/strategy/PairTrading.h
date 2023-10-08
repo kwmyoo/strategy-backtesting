@@ -22,35 +22,7 @@ class PairTradingInput : public StrategyInput {
 
   std::vector<double> currentPrices_;
 
-  PairTradingInput(Backtest* backtest);
-
-  void getInputAtPeriod(int period) override;
-};
-
-/*
- * The following algorithm implements pair trading method introduced in
- * https://blog.quantinsti.com/pairs-trading-basics/
- */
-class PairTrading : public Strategy {
- public:
-  PairTrading(const std::string& symbol1, const std::string& symbol2,
-              const char* fromStr, const char* toStr,
-              double limit);
-
-  double getCovariance();
-
-//  double getCointegration();
-
-  void calculateHedgeRatio();
-
-  void calculateSpreadMeanAndStd();
-
-  double calculateZScore(double price1, double price2);
-
-  int operator()(int assetNum, std::shared_ptr<StrategyInput> input) override;
-
- private:
-  std::vector<std::vector<double>> prices_;
+  std::vector<std::vector<double>> pastPrices_;
 
   std::vector<std::vector<double>> logPrices_;
 
@@ -60,7 +32,32 @@ class PairTrading : public Strategy {
 
   double spreadStd_;
 
-  double limit_;
+  double zScore_;
+
+  double limit_ = 1.0;
+
+  PairTradingInput(Backtest* backtest);
+
+  void getInputAtPeriod(int period) override;
+
+  double getCovariance();
+
+  void calculateHedgeRatio();
+
+  void calculateSpreadMeanAndStd();
+
+  double calculateZScore(double price1, double price2);
+};
+
+/*
+ * The following algorithm implements pair trading method introduced in
+ * https://blog.quantinsti.com/pairs-trading-basics/
+ */
+class PairTrading : public Strategy {
+ public:
+  PairTrading() = default;
+
+  int operator()(int assetNum, std::shared_ptr<StrategyInput> input) override;
 };
 
 

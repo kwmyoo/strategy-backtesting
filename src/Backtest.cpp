@@ -32,6 +32,9 @@ Backtest::Backtest(StrategyFn&& strategyFn,
 
   ratios_ = std::vector<int>(numAssets_);
   currentPrices_ = std::vector<double>(numAssets_, 0.0);
+
+  fromStr_ = fromStr;
+  toStr_ = toStr;
 }
 
 Asset& Backtest::getAsset(int assetNum) {
@@ -78,4 +81,8 @@ void Backtest::execute() {
   }
 
   sellAssetsAtPeriod(numPeriods_ - 1);
+}
+
+const std::string& Backtest::getAssetNameAtIndex(int index) {
+  return portfolio_.assets_[0].name_;
 }

@@ -56,12 +56,12 @@ MeanReversion::MeanReversion() {
 }
 
 bool MeanReversion::isBuySignal(std::shared_ptr<MeanReversionInput> input) {
-  return (input->currPrice_ >= input->movingAverage_) && (input->rsi_ >= input->rsiBuyThreshold_);
+  return (input->currPrice_ >= input->movingAverage_) && (input->rsi_ >= rsiBuyThreshold_);
 }
 
 bool MeanReversion::isSellSignal(std::shared_ptr<MeanReversionInput> input) {
   int sellPeriod = buyPeriod_ + sellPeriodThreshold_;
-  return (input->rsi_ >= input->rsiSellThreshold_) || (input->period_ > sellPeriod);
+  return (input->rsi_ >= rsiSellThreshold_) || (input->period_ > sellPeriodThreshold_);
 }
 
 int MeanReversion::operator()(int assetNum, std::shared_ptr<StrategyInput> input) {

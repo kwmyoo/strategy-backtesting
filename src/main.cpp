@@ -4,60 +4,121 @@
 
 #include <memory>
 #include <iostream>
+#include <string>
+#include <vector>
+#include <boost/program_options.hpp>
 
 #include "Backtest.h"
 #include "YahooFinance.h"
 
-#include "spot.hpp"
 #include "strategy/PairTrading.h"
+#include "strategy/MeanReversion.h"
 #include "strategy/MovingAverageCrossover.h"
 #include "strategy/SimpleRebalance.h"
 
+namespace po = boost::program_options;
+
 int main(int argc, char** argv) {
+  po::options_description desc{"Options"};
+  desc.add_options()
+      ("help,h", "Help screen")
+      ("strategy,s", po::value<std::string>(), "Strategy")
+      ("from,f", po::value<std::string>(), "Date from")
+      ("to,t", po::value<std::string>(), "Date to")
+      ("balance,b", po::value<double>(), "Initial balance")
+      ("ticker,i", po::value<std::vector<std::string>>()->multitoken(), "tickers");
+
+  po::variables_map vm;
+  po::store(po::parse_command_line(argc, argv, desc), vm);
+  po::notify(vm);
+
+  if (vm.count("help")) {
+    std::cout << desc << std::endl;
+    return 0;
+  }
+
+  std::string strategy, from, to;
   std::vector<std::string> symbols;
-  symbols.push_back(YFSymbols::SNP_500);
+  double balance;
+  if (vm.count("strategy")) {
+    strategy = vm["strategy"].as<std::string>();
+  } else {
+    std::cout << "Error: strategy should be specified" << std::endl;
+    std::cout << desc << std::endl;
+    return 0;
+  }
+  if (vm.count("from")) {
+    from = vm["from"].as<std::string>();
+  } else {
+    std::cout << "Error: date from should be specified" << std::endl;
+    std::cout << desc << std::endl;
+    return 0;
+  }
+  if (vm.count("to")) {
+    to = vm["to"].as<std::string>();
+  } else {
+    std::cout << "Error: date to should be specified" << std::endl;
+    std::cout << desc << std::endl;
+    return 0;
+  }
+  if (vm.count("balance")) {
+    balance = vm["balance"].as<double>();
+  } else {
+    std::cout << "Error: balance should be specified" << std::endl;
+    std::cout << desc << std::endl;
+    return 0;
+  }
+  if (vm.count("ticker")) {
+    symbols = vm["ticker"].as<std::vector<std::string>>();
+  } else {
+    std::cout << "Error: tickers should be specified" << std::endl;
+    std::cout << desc << std::endl;
+    return 0;
+  }
 
-  Backtest backtest(
-      std::make_unique<MovingAverageCrossover>(),
-      1000000000.0,
-      symbols,
-      "2012-01-01", "2023-08-01"
-  );
-  std::shared_ptr<StrategyInput> input = std::make_shared<MovingAverageCrossoverInput>(&backtest);
+  Backtest* backtest;
+  std::unique_ptr<Strategy> strategyPtr;
+  std::shared_ptr<StrategyInput> strategyInput;
 
-//  std::vector<std::string> symbols;
-//  symbols.push_back(YFSymbols::TIGER_SNP500_ETF);
-//  symbols.push_back(YFSymbols::KODEX_KOSPI_ETF);
-//  symbols.push_back(YFSymbols::TIGER_US_BONDS_ETF);
-//  symbols.push_back(YFSymbols::KOSEF_KOREA_BONDS_ETF);
-//
-//  Backtest backtest(
-//      std::make_unique<SimpleRebalance>(),
-//      1000000000.0,
-//      symbols,
-//      "2023-01-01", "2023-09-01"
-//  );
-//  std::shared_ptr<StrategyInput> input = std::make_shared<SimpleRebalanceInput>(&backtest);
+  if (strategy == "r" ||
+      strategy == "R" ||
+      strategy == "rebalance" ||
+      strategy == "Rebalance") {
+    strategyPtr = std::make_unique<SimpleRebalance>();
+    backtest = new Backtest(std::move(strategyPtr), balance, symbols, from.c_str(), to.c_str());
+    strategyInput = std::make_shared<SimpleRebalanceInput>(backtest);
+  } else if (strategy == "mac" ||
+             strategy == "MAC" ||
+             strategy == "movingaveragecrossover" ||
+             strategy == "MovingAverageCrossover") {
+    strategyPtr = std::make_unique<MovingAverageCrossover>();
+    backtest = new Backtest(std::move(strategyPtr), balance, symbols, from.c_str(), to.c_str());
+    strategyInput = std::make_shared<MovingAverageCrossoverInput>(backtest);
+  } else if (strategy == "mr" ||
+             strategy == "MR" ||
+             strategy == "meanreversion" ||
+             strategy == "MeanReversion") {
+    strategyPtr = std::make_unique<MeanReversion>();
+    backtest = new Backtest(std::move(strategyPtr), balance, symbols, from.c_str(), to.c_str());
+    strategyInput = std::make_shared<MeanReversionInput>(backtest);
+  } else if (strategy == "pt" ||
+             strategy == "PT" ||
+             strategy == "pairtrading" ||
+             strategy == "PairTrading") {
+    strategyPtr = std::make_unique<PairTrading>();
+    backtest = new Backtest(std::move(strategyPtr), balance, symbols, from.c_str(), to.c_str());
+    strategyInput = std::make_shared<PairTradingInput>(backtest);
+  } else {
+    std::cout << "Strategy should be one of: Rebalance, MeanReversion, MovingAverageCrossover, PairTrading"
+              << std::endl;
+    return 0;
+  }
 
-//  std::vector<std::string> symbols;
-//  symbols.push_back(YFSymbols::EXXON);
-//  symbols.push_back(YFSymbols::SHELL);
-//
-//  Backtest backtest(
-//      std::make_unique<PairTrading>(YFSymbols::EXXON,
-//                                    YFSymbols::SHELL,
-//                                    "2021-01-01",
-//                                    "2021-12-31",
-//                                    1.0),
-//      1000000000.0,
-//      symbols,
-//      "2022-01-01", "2022-12-31"
-//  );
-//  std::shared_ptr<StrategyInput> input = std::make_shared<PairTradingInput>(&backtest);
+  backtest->strategyInput_ = std::move(strategyInput);
+  backtest->execute();
+  std::cout << "Final return: " << backtest->totalBalance_ << std::endl;
 
+  delete backtest;
 
-  backtest.strategyInput_ = std::move(input);
-  backtest.execute();
-
-  std::cout << "Final return: " << backtest.totalBalance_ << std::endl;
+  return 0;
 }

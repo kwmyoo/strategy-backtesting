@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+constexpr int YEAR_IN_SECONDS = 31536000;
+
 void split(std::string str, std::string splitBy, std::vector<std::string>& tokens);
 
 enum class FileType {

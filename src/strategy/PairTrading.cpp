@@ -11,6 +11,7 @@
 #include "PairTrading.h"
 #include "YahooFinance.h"
 #include "time_utils.hpp"
+#include "Utilities.h"
 
 using namespace boost::math::statistics;
 
@@ -21,38 +22,37 @@ PairTradingInput::PairTradingInput(Backtest* backtest)
       numAssets_(backtest->numAssets_) {
   currentRatios_[0] = 0;
   currentRatios_[1] = 0;
+
+  std::time_t to = dateToEpoch(backtest->fromStr_);
+  std::time_t from = to - YEAR_IN_SECONDS;
+  pastPrices_.emplace_back(YahooFinance::getData(backtest->getAssetNameAtIndex(0), from, to));
+  pastPrices_.emplace_back(YahooFinance::getData(backtest->getAssetNameAtIndex(1), from, to));
+  assert(pastPrices_[0].size() == pastPrices_[1].size());
+  std::cout << "Covariance of the two stocks is: " << getCovariance() << std::endl;
+
+  calculateHedgeRatio();
 }
 
 void PairTradingInput::getInputAtPeriod(int period) {
   for (int assetNum = 0; assetNum < numAssets_; assetNum++) {
     currentPrices_[assetNum] = data_[assetNum][period]->price_.price();
   }
+
+  zScore_ = calculateZScore(currentPrices_[0], currentPrices_[1]);
 }
 
-PairTrading::PairTrading(const std::string& symbol1, const std::string& symbol2,
-                         const char* fromStr, const char* toStr,
-                         double limit) : limit_(limit) {
-  std::time_t from = dateToEpoch(fromStr);
-  std::time_t to = dateToEpoch(toStr);
-  prices_.emplace_back(YahooFinance::getData(symbol1, from, to));
-  prices_.emplace_back(YahooFinance::getData(symbol2, from, to));
-  assert(prices_[0].size() == prices_[1].size());
-
-  std::cout << "Covariance of the two stocks is: " << getCovariance() << std::endl;
-}
-
-double PairTrading::getCovariance() {
-  return covariance(prices_[0], prices_[1]);
+double PairTradingInput::getCovariance() {
+  return covariance(pastPrices_[0], pastPrices_[1]);
 }
 
 // Calculates ln(s2) = c1*ln(s1) + c0
-void PairTrading::calculateHedgeRatio() {
+void PairTradingInput::calculateHedgeRatio() {
   std::vector<double> symbol1LogPrice;
   std::vector<double> symbol2LogPrice;
 
-  for (int i = 0; i < prices_[0].size(); i++) {
-    symbol1LogPrice.push_back(log(prices_[0][i]));
-    symbol2LogPrice.push_back(log(prices_[1][i]));
+  for (int i = 0; i < pastPrices_[0].size(); i++) {
+    symbol1LogPrice.push_back(log(pastPrices_[0][i]));
+    symbol2LogPrice.push_back(log(pastPrices_[1][i]));
   }
 
   const auto [c0, c1]
@@ -63,10 +63,10 @@ void PairTrading::calculateHedgeRatio() {
   hedgeRatio_ = c1;
 }
 
-void PairTrading::calculateSpreadMeanAndStd() {
+void PairTradingInput::calculateSpreadMeanAndStd() {
   std::vector<double> spread;
 
-  for (int i = 0; i < prices_[0].size(); i++) {
+  for (int i = 0; i < pastPrices_[0].size(); i++) {
     spread.push_back(logPrices_[1][i] - hedgeRatio_ * logPrices_[0][i]);
   }
 
@@ -75,7 +75,7 @@ void PairTrading::calculateSpreadMeanAndStd() {
   spreadStd_ = std;
 }
 
-double PairTrading::calculateZScore(double price1, double price2) {
+double PairTradingInput::calculateZScore(double price1, double price2) {
   double spread = log(price2) - hedgeRatio_ * log(price1);
   return (spread - spreadMean_) / spreadStd_;
 }
@@ -83,23 +83,21 @@ double PairTrading::calculateZScore(double price1, double price2) {
 int PairTrading::operator()(int assetNum, std::shared_ptr<StrategyInput> input) {
   std::shared_ptr<PairTradingInput> newInput =
       std::reinterpret_pointer_cast<PairTradingInput>(input);
-  double zScore = calculateZScore(newInput->currentPrices_[0], newInput->currentPrices_[1]);
 
-  if (zScore >= limit_) {
+  if (newInput->zScore_ >= newInput->limit_) {
     if (assetNum == 0) {
       return 100;
     } else if (assetNum == 1) {
       return 0;
     }
-  } else if (zScore <= -1 * limit_) {
+  } else if (newInput->zScore_ <= -1 * newInput->limit_) {
     if (assetNum == 0) {
       return 0;
     } else if (assetNum == 1) {
       return 100;
     }
   }
-  std::cout << "ccc" << std::endl;
 
-  return input->currentRatios_[assetNum];
+  return newInput->currentRatios_[assetNum];
 }
 

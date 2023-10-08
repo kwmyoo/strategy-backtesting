@@ -22,6 +22,8 @@ class Backtest {
 
   Asset& getAsset(int assetNum);
 
+  const std::string& getAssetNameAtIndex(int index);
+
   void sellAssetsAtPeriod(int period);
 
   void buyAssetsAtPeriod(int period);
@@ -50,6 +52,10 @@ class Backtest {
   int numPeriods_;
 
   double totalBalance_;
+
+  const char* fromStr_;
+
+  const char* toStr_;
 };
 
 

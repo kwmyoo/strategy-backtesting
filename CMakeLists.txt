@@ -22,6 +22,7 @@ find_package(
         1.18.0
         REQUIRED
 )
+FIND_PACKAGE(Boost COMPONENTS program_options REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 
 add_subdirectory(src/third_party/yahoo-finance)
