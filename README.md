@@ -17,11 +17,11 @@ This backtesting program utilizes command line options.
 
 5 options are required:
 
-- -s : strategy (currently supports rebalance, meanreversion, movingaveragecrossover, pairtrading)
-- -f : date from
-- -t : date to
-- -b : initial balance
-- -i : tickers
+- s : strategy (currently supports rebalance, meanreversion, movingaveragecrossover, pairtrading)
+- f : date from
+- t : date to
+- b : initial balance
+- i : tickers
 
 ## Example
 
