@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <vector>
 #include <boost/program_options.hpp>
@@ -117,6 +118,9 @@ int main(int argc, char** argv) {
   backtest->strategyInput_ = std::move(strategyInput);
   backtest->execute();
   std::cout << "Final return: " << backtest->totalBalance_ << std::endl;
+  std::cout << std::setprecision(4) << "Rate of return: " << (backtest->totalBalance_ - balance) * 100.0 / balance
+            << "%"
+            << std::endl;
 
   delete backtest;
 
