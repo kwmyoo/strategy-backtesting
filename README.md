@@ -23,6 +23,8 @@ This backtesting program utilizes command line options.
 - b : initial balance
 - i : tickers
 
+For more information, use -h (help) option.
+
 ## Example
 
 If I want to backtest pair trading strategy on ExxonMobil(XOM) and Shell(SHEL) from 2022-01-01 to 2022-12-31 with initial the
