@@ -19,6 +19,10 @@
 
 namespace po = boost::program_options;
 
+/*
+ * Example:
+ * ./strategy_backtesting -s pairtrading -f 2022-01-01 -t 2022-12-31 -b 100000000.0 -i XOM SHEL
+ */
 int main(int argc, char** argv) {
   po::options_description desc{"Options"};
   desc.add_options()
